@@ -6,64 +6,64 @@ class Graph:
         self.time = 0
     
     def add_edge(self, u, v):
-        """Äîáàâëåíèå ðåáðà îò âåðøèíû u ê âåðøèíå v"""
+        """Добавление ребра от вершины u к вершине v"""
         self.graph[u].append(v)
     
     def dfs_util(self, v, visited, entry_time, exit_time):
-        """Âñïîìîãàòåëüíàÿ ôóíêöèÿ äëÿ ðåêóðñèâíîãî DFS"""
-        # Óâåëè÷èâàåì âðåìÿ è çàïèñûâàåì âðåìÿ âõîäà
+        """Вспомогательная функция для рекурсивного DFS"""
+        # Увеличиваем время и записываем время входа
         self.time += 1
         entry_time[v] = self.time
         visited[v] = True
-        print(f"Âõîä â âåðøèíó {v}, âðåìÿ âõîäà: {entry_time[v]}")
+        print(f"Вход в вершину {v}, время входа: {entry_time[v]}")
         
-        # Ðåêóðñèâíî ïîñåùàåì âñå ñìåæíûå âåðøèíû
+        # Рекурсивно посещаем все смежные вершины
         for neighbor in self.graph[v]:
             if not visited[neighbor]:
                 self.dfs_util(neighbor, visited, entry_time, exit_time)
         
-        # Óâåëè÷èâàåì âðåìÿ è çàïèñûâàåì âðåìÿ âûõîäà
+        # Увеличиваем время и записываем время выхода
         self.time += 1
         exit_time[v] = self.time
-        print(f"Âûõîä èç âåðøèíû {v}, âðåìÿ âûõîäà: {exit_time[v]}")
+        print(f"Выход из вершины {v}, время выхода: {exit_time[v]}")
     
     def dfs(self, start_vertex=None):
-        """Îñíîâíàÿ ôóíêöèÿ DFS"""
-        # Èíèöèàëèçàöèÿ ìàññèâîâ
+        """Основная функция DFS"""
+        # Инициализация массивов
         visited = defaultdict(bool)
         entry_time = {}
         exit_time = {}
         self.time = 0
         
-        # Åñëè ñòàðòîâàÿ âåðøèíà íå óêàçàíà, áåðåì ïåðâóþ èç ãðàôà
+        # Если стартовая вершина не указана, берем первую из графа
         if start_vertex is None:
             start_vertex = list(self.graph.keys())[0] if self.graph else 0
         
-        print("Íà÷èíàåì îáõîä â ãëóáèíó (DFS):")
+        print("Начинаем обход в глубину (DFS):")
         print("-" * 40)
         
-        # Çàïóñêàåì DFS èç ñòàðòîâîé âåðøèíû
+        # Запускаем DFS из стартовой вершины
         if not visited[start_vertex]:
             self.dfs_util(start_vertex, visited, entry_time, exit_time)
         
-        # Ïðîâåðÿåì âñå âåðøèíû (äëÿ íåñâÿçíûõ ãðàôîâ)
+        # Проверяем все вершины (для несвязных графов)
         for vertex in list(self.graph.keys()):
             if not visited[vertex]:
                 self.dfs_util(vertex, visited, entry_time, exit_time)
         
         print("-" * 40)
-        print("Èòîãîâûå âðåìåíà âõîäà è âûõîäà:")
+        print("Итоговые времена входа и выхода:")
         for vertex in sorted(entry_time.keys()):
-            print(f"Âåðøèíà {vertex}: âõîä={entry_time[vertex]}, âûõîä={exit_time[vertex]}")
+            print(f"Вершина {vertex}: вход={entry_time[vertex]}, выход={exit_time[vertex]}")
         
         return entry_time, exit_time
 
-# Ïðèìåð èñïîëüçîâàíèÿ
+# Пример использования
 if __name__ == "__main__":
-    # Ñîçäàåì ãðàô
+    # Создаем граф
     g = Graph()
     
-    # Äîáàâëÿåì ðåáðà
+    # Добавляем ребра
     g.add_edge(0, 1)
     g.add_edge(0, 2)
     g.add_edge(1, 2)
@@ -71,21 +71,21 @@ if __name__ == "__main__":
     g.add_edge(2, 3)
     g.add_edge(3, 3)
     
-    # Âûïîëíÿåì DFS
+    # Выполняем DFS
     entry, exit = g.dfs(2)
     
     print("\n" + "="*50)
     
-    # Äðóãîé ïðèìåð ñ íåñâÿçíûì ãðàôîì
-    print("\nÏðèìåð ñ íåñâÿçíûì ãðàôîì:")
+    # Другой пример с несвязным графом
+    print("\nПример с несвязным графом:")
     g2 = Graph()
     g2.add_edge(1, 2)
     g2.add_edge(1, 3)
     g2.add_edge(2, 4)
-    g2.add_edge(5, 6)  # Îòäåëüíàÿ êîìïîíåíòà ñâÿçíîñòè
+    g2.add_edge(5, 6)  # Отдельная компонента связности
     
     entry2, exit2 = g2.dfs(1)
-
+    
 
 
 
